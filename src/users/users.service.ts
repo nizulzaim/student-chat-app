@@ -7,7 +7,8 @@ export class UsersService {
   constructor(private readonly user: DatabaseService<User>) {
     this.user.setCollection(User);
   }
-  users() {
-    return this.user.findAll({});
+
+  async users(): Promise<User[]> {
+    return this.user.findAll();
   }
 }
