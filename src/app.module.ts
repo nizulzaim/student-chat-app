@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { useHive } from '@graphql-hive/client';
 import { ConfigModule } from '@nestjs/config';
 import { DatabasesModule } from '@libs/databases';
+import * as crypto from 'crypto';
 
 @Module({
   imports: [
@@ -22,6 +23,10 @@ import { DatabasesModule } from '@libs/databases';
           debug: true,
           usage: true,
           token: 'f195e08b4c6be4db558519eb1be244fd',
+          reporting: {
+            author: 'Nizul Zaim',
+            commit: crypto.randomBytes(8).toString('hex'),
+          },
         }),
       ],
     }),
