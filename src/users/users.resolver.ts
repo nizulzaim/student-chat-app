@@ -10,9 +10,4 @@ export class UsersResolver {
   users() {
     return this.userService.users();
   }
-
-  @Query(() => [User])
-  async user() {
-    return (await this.userService.users())[0];
-  }
 }
