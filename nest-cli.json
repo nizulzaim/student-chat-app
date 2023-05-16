@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true
+  },
+  "projects": {
+    "databases": {
+      "type": "library",
+      "root": "libs/databases",
+      "entryFile": "index",
+      "sourceRoot": "libs/databases/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/databases/tsconfig.lib.json"
+      }
+    },
+    "decorators": {
+      "type": "library",
+      "root": "libs/decorators",
+      "entryFile": "index",
+      "sourceRoot": "libs/decorators/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/decorators/tsconfig.lib.json"
+      }
+    },
+    "scalars": {
+      "type": "library",
+      "root": "libs/scalars",
+      "entryFile": "index",
+      "sourceRoot": "libs/scalars/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/scalars/tsconfig.lib.json"
+      }
+    }
+  }
+}
