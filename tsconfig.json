@@ -35,6 +35,12 @@
       ],
       "@libs/scalars/*": [
         "libs/scalars/src/*"
+      ],
+      "@libs/logger": [
+        "libs/logger/src"
+      ],
+      "@libs/logger/*": [
+        "libs/logger/src/*"
       ]
     }
   }

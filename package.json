@@ -79,7 +79,8 @@
     "moduleNameMapper": {
       "^@libs/databases(|/.*)$": "<rootDir>/libs/databases/src/$1",
       "^@libs/decorators(|/.*)$": "<rootDir>/libs/decorators/src/$1",
-      "^@libs/scalars(|/.*)$": "<rootDir>/libs/scalars/src/$1"
+      "^@libs/scalars(|/.*)$": "<rootDir>/libs/scalars/src/$1",
+      "^@libs/logger(|/.*)$": "<rootDir>/libs/logger/src/$1"
     }
   }
 }
