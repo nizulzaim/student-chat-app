@@ -15,6 +15,7 @@ import { ConfigService } from '@nestjs/config';
         return {
           global: true,
           signOptions: { expiresIn: '60s' },
+          verifyOptions: { ignoreExpiration: true },
           secret,
         };
       },
