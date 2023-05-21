@@ -13,4 +13,6 @@ export class User extends MasterEntity {
 
   @Field()
   readonly email: string;
+
+  readonly password: string;
 }

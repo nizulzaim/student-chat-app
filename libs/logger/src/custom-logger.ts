@@ -4,9 +4,10 @@ export class CustomLogger extends ConsoleLogger {
   log(message: string): void {
     super.log(message);
   }
-  error(message: string, trace: string): void {
+  error(message: string, trace?: string): void {
     super.error(message, trace);
   }
+
   warn(message: string): void {
     super.warn(message);
   }

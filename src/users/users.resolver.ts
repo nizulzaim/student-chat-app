@@ -8,6 +8,6 @@ export class UsersResolver {
 
   @Query(() => [User])
   users(): Promise<User[]> {
-    return this.userService.users();
+    return this.userService.findAll();
   }
 }

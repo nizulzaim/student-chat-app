@@ -1,6 +1,7 @@
 import { DatabaseService } from '@libs/databases';
 import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
+import { FindOneUserInput } from './dto/args';
 
 @Injectable()
 export class UsersService {
@@ -8,7 +9,11 @@ export class UsersService {
     this.user.setCollection(User);
   }
 
-  async users(): Promise<User[]> {
+  async findAll(): Promise<User[]> {
     return this.user.findAll();
+  }
+
+  async findOne(args: FindOneUserInput): Promise<User> {
+    return this.user.findOne(args);
   }
 }
