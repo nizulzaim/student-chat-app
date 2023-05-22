@@ -1,7 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { ObjectId } from 'mongodb';
 
-@ObjectType()
+@ObjectType({ isAbstract: true })
 export class MasterEntity {
   private static _tableName = '';
 

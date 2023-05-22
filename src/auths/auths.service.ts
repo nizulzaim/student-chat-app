@@ -3,7 +3,7 @@ import * as argon2 from 'argon2';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { LoginWithPasswordOutput } from './dto/output';
+import { LoginResult } from './dto/output';
 
 @Injectable()
 export class AuthsService {
@@ -18,10 +18,12 @@ export class AuthsService {
   }: {
     email: string;
     password: string;
-  }): Promise<LoginWithPasswordOutput> {
+  }): Promise<LoginResult> {
     const user = await this.userService.findOne({ email });
 
     if (!user) throw new Error('Email or password is incorrect');
+    if (!user.isActive)
+      throw new Error('User is not active. Please contact administrator');
 
     const isCorrect = await argon2.verify(user.password, password);
     if (!isCorrect) throw new Error('Email or password is incorrect');

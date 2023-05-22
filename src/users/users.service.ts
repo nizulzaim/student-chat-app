@@ -16,4 +16,14 @@ export class UsersService {
   async findOne(args: FindOneUserInput): Promise<User> {
     return this.user.findOne(args);
   }
+
+  async create(): Promise<User> {
+    return this.user.create({
+      email: 'mnizulzaim@gmail.com',
+      firstName: 'Mohamad Nizul Zaim',
+      lastName: 'Anuar',
+      isActive: true,
+      password: 'hello world',
+    });
+  }
 }

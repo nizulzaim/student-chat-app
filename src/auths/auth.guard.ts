@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Scope,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -10,13 +11,15 @@ import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { AuthenticationError } from 'apollo-server-core';
+import { UsersService } from 'src/users/users.service';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class AuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly reflector: Reflector,
+    private readonly userService: UsersService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -45,10 +48,14 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret,
-      });
-      request.user = payload;
+      const payload = await this.jwtService.verifyAsync<{ email: string }>(
+        token,
+        {
+          secret,
+        },
+      );
+      const user = await this.userService.findOne({ email: payload.email });
+      request.user = user;
     } catch {
       throw new UnauthorizedException();
     }

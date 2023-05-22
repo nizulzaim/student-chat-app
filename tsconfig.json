@@ -41,6 +41,12 @@
       ],
       "@libs/logger/*": [
         "libs/logger/src/*"
+      ],
+      "@libs/commons": [
+        "libs/commons/src"
+      ],
+      "@libs/commons/*": [
+        "libs/commons/src/*"
       ]
     }
   }

@@ -3,6 +3,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   Optional,
   Scope,
 } from '@nestjs/common';
@@ -12,21 +13,36 @@ import {
   Document,
   Filter,
   FindOptions,
+  InsertOneOptions,
   MongoClient,
   ObjectId,
   SchemaMember,
   WithId,
 } from 'mongodb';
 import { MasterEntity } from './master.entity';
+import { RequestWithUser } from '@libs/commons';
+import { CONTEXT } from '@nestjs/graphql';
 
 @Injectable({ scope: Scope.TRANSIENT })
-export class DatabaseService<T extends MasterEntity> {
+export class DatabaseService<
+  T extends MasterEntity,
+  N = Omit<
+    T,
+    | 'createdAt'
+    | 'updatedAt'
+    | 'updatedById'
+    | 'createdById'
+    | '_id'
+    | 'isDeleted'
+  > & { _id?: ObjectId; isActive?: boolean },
+> {
   private tableName: string;
   private readonly client: MongoClient;
   private readonly db: Db;
 
   constructor(
     @Optional() @Inject('MONGODB') private readonly mongodb: Database,
+    @Inject(CONTEXT) private readonly context: { req: RequestWithUser },
   ) {
     this.client = this.mongodb.client;
     this.db = this.mongodb.database;
@@ -125,5 +141,39 @@ export class DatabaseService<T extends MasterEntity> {
     options: FindOptions = null,
   ): Promise<T> {
     return this.findBy(query, projection, options);
+  }
+
+  async create(
+    newData: N & { _id?: ObjectId },
+    options: InsertOneOptions = null,
+  ): Promise<WithId<T>> {
+    const { insertedId, data } = await this.rawCreate(newData, options);
+
+    return { _id: insertedId, ...data };
+  }
+
+  async rawCreate(newData: N, options: InsertOneOptions = null) {
+    const user = this.context.req.user;
+    const data: any = {
+      ...newData,
+      isActive:
+        typeof (newData as any).isActive !== 'undefined'
+          ? true
+          : (newData as any).isActive ?? true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      createdById: user?._id ?? null,
+      updatedById: user?._id ?? null,
+      isDeleted: false,
+    };
+    const { insertedId } = await this.db
+      .collection<T>(this.tableName)
+      .insertOne(data, options);
+
+    if (!insertedId) {
+      throw new InternalServerErrorException('Unable to create resource.');
+    }
+
+    return { insertedId, data };
   }
 }

@@ -42,6 +42,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/logger/tsconfig.lib.json"
       }
+    },
+    "commons": {
+      "type": "library",
+      "root": "libs/commons",
+      "entryFile": "index",
+      "sourceRoot": "libs/commons/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/commons/tsconfig.lib.json"
+      }
     }
   }
 }

@@ -5,8 +5,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabasesModule } from '@libs/databases';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { CustomLogger } from '@libs/logger';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from '@apollo/server/plugin/landingPage/default';
 import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
+import { ApolloServerPluginUsageReporting } from '@apollo/server/plugin/usageReporting';
 import { AuthsModule } from './auths/auths.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auths/auth.guard';
@@ -30,8 +34,17 @@ import { AuthGuard } from './auths/auth.guard';
             ? [
                 ApolloServerPluginInlineTrace(),
                 ApolloServerPluginLandingPageLocalDefault(),
+                ApolloServerPluginUsageReporting({
+                  sendHeaders: {
+                    all: true,
+                  },
+                  sendErrors: {
+                    unmodified: true,
+                  },
+                  sendReportsImmediately: true,
+                }),
               ]
-            : [],
+            : [ApolloServerPluginLandingPageProductionDefault()],
         };
       },
       inject: [ConfigService],
