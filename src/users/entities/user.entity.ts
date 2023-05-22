@@ -15,4 +15,7 @@ export class User extends MasterEntity {
   readonly email: string;
 
   readonly password: string;
+
+  @Field({ defaultValue: 'Asia/Kuala_Lumpur' })
+  readonly timezone: string = 'Asia/Kuala_Lumpur';
 }

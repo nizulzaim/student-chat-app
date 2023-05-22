@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
+import { GraphQLModule, registerEnumType } from '@nestjs/graphql';
 import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabasesModule } from '@libs/databases';
@@ -14,6 +14,7 @@ import { ApolloServerPluginUsageReporting } from '@apollo/server/plugin/usageRep
 import { AuthsModule } from './auths/auths.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auths/auth.guard';
+import { SortEnum } from '@libs/commons';
 
 @Module({
   imports: [
@@ -59,4 +60,8 @@ import { AuthGuard } from './auths/auth.guard';
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  constructor() {
+    registerEnumType(SortEnum, { name: 'SortEnum' });
+  }
+}
