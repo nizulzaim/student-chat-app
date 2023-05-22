@@ -1,5 +1,5 @@
 import { DatabaseService } from '@libs/databases';
-import { Global, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { FindAllUsersInput, FindOneUserInput, UsersSortArgs } from './dto/args';
 import {
@@ -13,7 +13,6 @@ import { CreateUserInput } from './dto/input';
 import { Filter } from 'mongodb';
 
 @Injectable()
-@Global()
 export class UsersService {
   constructor(private readonly user: DatabaseService<User>) {
     this.user.setCollection(User);

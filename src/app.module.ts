@@ -15,6 +15,7 @@ import { AuthsModule } from './auths/auths.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auths/auth.guard';
 import { SortEnum } from '@libs/commons';
+import { FacultiesModule } from './faculties/faculties.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { SortEnum } from '@libs/commons';
     }),
     UsersModule,
     AuthsModule,
+    FacultiesModule,
   ],
   providers: [
     {
