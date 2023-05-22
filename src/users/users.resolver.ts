@@ -3,7 +3,7 @@ import { User } from './entities/user.entity';
 import { BaseResolver } from '@libs/commons';
 import { UsersService } from './users.service';
 import { PaginatedUsers } from './dto/outputs';
-import { FindAllUsersInput, UsersSortArgs } from './dto/args';
+import { FindAllUsersInput, FindOneUserInput, UsersSortArgs } from './dto/args';
 import { CreateUserInput } from './dto/input';
 
 @Resolver(() => User)
@@ -20,6 +20,11 @@ export class UsersResolver extends BaseResolver(User) {
     sort?: UsersSortArgs,
   ): Promise<PaginatedUsers> {
     return this.userService.findAll(query, sort);
+  }
+
+  @Query(() => User)
+  user(@Args('query') query: FindOneUserInput): Promise<User> {
+    return this.userService.findOne(query);
   }
 
   @Mutation(() => User)
