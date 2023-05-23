@@ -10,7 +10,7 @@ import {
 import { PaginatedUsers } from './dto/outputs';
 import * as argon2 from 'argon2';
 import { CreateUserInput } from './dto/input';
-import { Filter } from 'mongodb';
+import { Filter, ObjectId } from 'mongodb';
 
 @Injectable()
 export class UsersService {
@@ -49,5 +49,11 @@ export class UsersService {
   async create(input: CreateUserInput) {
     const password = await argon2.hash(input.password);
     return this.user.createUnique({ ...input, password }, ['email']);
+  }
+
+  // reset password method, id must be ObjectId
+  async resetPassword(id: ObjectId, password: string) {
+    const hashedPassword = await argon2.hash(password);
+    return this.user.update({ _id: id }, { password: hashedPassword });
   }
 }

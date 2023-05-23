@@ -6,20 +6,25 @@ import {
   Scope,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { JwtService } from '@nestjs/jwt';
 import { AuthenticationError } from 'apollo-server-core';
 import { UsersService } from 'src/users/users.service';
+import {
+  Algorithm,
+  JwtHeader,
+  SigningKeyCallback,
+  verify as jwtVerify,
+} from 'jsonwebtoken';
+import * as jwksClient from 'jwks-rsa';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable({ scope: Scope.REQUEST })
 export class AuthGuard implements CanActivate {
   constructor(
-    private jwtService: JwtService,
-    private readonly configService: ConfigService,
     private readonly reflector: Reflector,
     private readonly userService: UsersService,
+    private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -36,29 +41,59 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    const secret = this.configService.get<string>('JWT_SECRET');
-    const authToken = request.headers.authorization;
-    let token = '';
-
-    if (!authToken) throw new AuthenticationError('Invalid token');
-    if (authToken.substr(0, 6).toLowerCase() === 'bearer') {
-      token = authToken.substr(6).trim();
-    } else {
+    const authToken: string = request.headers.authorization;
+    if (!authToken?.startsWith('Bearer'))
       throw new AuthenticationError('Invalid token');
-    }
 
+    const token = authToken.substring(6).trim();
     try {
-      const payload = await this.jwtService.verifyAsync<{ email: string }>(
+      const payload = await this.validateToken<{ preferred_username: string }>(
         token,
-        {
-          secret,
-        },
       );
-      const user = await this.userService.findOne({ email: payload.email });
+
+      const user = await this.userService.findOne({
+        email: payload.preferred_username,
+      });
+
       request.user = user;
-    } catch {
+      return true;
+    } catch (err) {
+      console.log(err);
       throw new UnauthorizedException();
     }
-    return true;
+  }
+
+  async validateToken<T>(idToken: string): Promise<T> {
+    const clientId = this.configService.get('AZURE_CLIENTID');
+    const tenantId = this.configService.get('AZURE_TENANTID');
+
+    const options = {
+      algorithms: ['RS256'] as Algorithm[],
+      issuer: `https://login.microsoftonline.com/${tenantId}/v2.0`,
+      audience: clientId,
+    };
+    return new Promise<T>((resolve, reject) => {
+      jwtVerify(idToken, this.getPublicKey, options, (err, decoded) => {
+        if (err) reject(err);
+
+        resolve(decoded as T);
+      });
+    });
+  }
+
+  getPublicKey(header: JwtHeader, callback: SigningKeyCallback) {
+    const tenantId = process.env.AZURE_TENANTID;
+
+    const client = jwksClient({
+      jwksUri: `https://login.microsoftonline.com/${tenantId}/discovery/v2.0/keys`,
+    });
+    client.getSigningKey(header.kid, (err, key) => {
+      if (err) {
+        callback(err);
+      } else {
+        const signingKey = key.getPublicKey();
+        callback(null, signingKey);
+      }
+    });
   }
 }
