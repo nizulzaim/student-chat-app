@@ -1,5 +1,6 @@
 import {
   Args,
+  Int,
   Mutation,
   Parent,
   Query,
@@ -56,5 +57,13 @@ export class ConversationsResolver extends BaseResolver(Conversation) {
     return this.userService.rawFindAll({
       _id: { $in: parent.userIds },
     });
+  }
+
+  @ResolveField(() => Int)
+  async numberOfUnread(
+    @Parent() parent: Conversation,
+    @Context() ctx: RequestWithUser,
+  ) {
+    return this.conversationService.findNumberOfUnreadMessages(parent, ctx);
   }
 }

@@ -17,4 +17,7 @@ export class UpdateConversationInput extends PartialType(
 ) {
   @Field(() => ID)
   _id: ObjectId;
+
+  @Field(() => ID, { nullable: true })
+  userId?: ObjectId;
 }

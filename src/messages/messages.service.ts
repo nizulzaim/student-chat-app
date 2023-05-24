@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { CreateMessageInput } from './dto/input';
 import { DatabaseService } from '@libs/databases';
 import { Message } from './entities/message.entity';
@@ -13,6 +13,7 @@ export class MessagesService {
   constructor(
     private readonly message: DatabaseService<Message>,
     @Inject('PUB_SUB') private pubSub: PubSub,
+    @Inject(forwardRef(() => ConversationsService))
     private readonly conversationService: ConversationsService,
   ) {
     this.message.setCollection(Message);
@@ -25,7 +26,10 @@ export class MessagesService {
       isActive: true,
     });
 
-    this.conversationService.update({ _id: input.conversationId });
+    this.conversationService.update({
+      _id: input.conversationId,
+      userId: result.createdById,
+    });
     this.pubSub.publish('messageAdded', { messageAdded: result });
 
     return result;
@@ -48,5 +52,16 @@ export class MessagesService {
     });
 
     return paginatedResultCreator({ ...results, page, limit });
+  }
+
+  async countFromDate({
+    conversationId,
+    minDate,
+  }: {
+    conversationId: ObjectId;
+    minDate?: Date;
+  }) {
+    if (!minDate) return this.message.count({ conversationId });
+    return this.message.count({ createdAt: { $gt: minDate }, conversationId });
   }
 }

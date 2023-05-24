@@ -9,10 +9,22 @@ export enum ConversationType {
 }
 
 @ObjectType()
+export class UserMeta {
+  @Field(() => [ID])
+  userId: ObjectId;
+
+  @Field(() => Date)
+  lastReadAt: Date;
+}
+
+@ObjectType()
 @Collection('conversations')
 export class Conversation extends MasterEntity {
   @Field(() => [ID])
   userIds: ObjectId[];
+
+  @Field(() => [UserMeta])
+  usersMeta?: UserMeta[];
 
   @Field(() => ConversationType)
   type: ConversationType = ConversationType.private;

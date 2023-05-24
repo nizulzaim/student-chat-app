@@ -7,16 +7,16 @@ import {
   FindAllConversationsInput,
   FindOneConversationInput,
 } from './dto/args';
-import {
-  RequestWithUser,
-  paginatedResultCreator,
-  searchQuery,
-} from '@libs/commons';
+import { RequestWithUser, paginatedResultCreator } from '@libs/commons';
 import { ObjectId } from 'mongodb';
+import { MessagesService } from 'src/messages/messages.service';
 
 @Injectable()
 export class ConversationsService {
-  constructor(private readonly conversations: DatabaseService<Conversation>) {
+  constructor(
+    private readonly conversations: DatabaseService<Conversation>,
+    private readonly messageService: MessagesService,
+  ) {
     this.conversations.setCollection(Conversation);
   }
 
@@ -28,9 +28,38 @@ export class ConversationsService {
     });
   }
 
-  update(input: UpdateConversationInput) {
-    const { _id, ...data } = input;
-    return this.conversations.update({ _id: new ObjectId(_id) }, data);
+  async update(input: UpdateConversationInput) {
+    const { _id, userId, ...data } = input;
+    const currentRecord = await this.conversations.findOne({
+      _id: new ObjectId(_id),
+    });
+
+    const currentMetadata = currentRecord.usersMeta ?? [];
+    const currentUserMetaIndex = userId
+      ? currentMetadata.findIndex(
+          (i) => i.userId.toString() === userId.toString(),
+        )
+      : -1;
+
+    if (currentUserMetaIndex > -1) {
+      currentMetadata[currentUserMetaIndex] = {
+        ...currentMetadata[currentUserMetaIndex],
+        lastReadAt: new Date(),
+      };
+    } else {
+      currentMetadata.push({
+        userId: new ObjectId(userId),
+        lastReadAt: new Date(),
+      });
+    }
+
+    return this.conversations.update(
+      { _id: new ObjectId(_id) },
+      {
+        ...data,
+        usersMeta: currentMetadata,
+      },
+    );
   }
 
   async findAll(
@@ -52,5 +81,33 @@ export class ConversationsService {
 
   findOne(input: FindOneConversationInput) {
     return this.conversations.findOne(input);
+  }
+
+  findNumberOfUnreadMessages(
+    conversation: Conversation,
+    context: RequestWithUser,
+  ) {
+    if (
+      !conversation.userIds
+        .map((i) => i.toString())
+        .includes(context.user._id.toString())
+    ) {
+      return 0;
+    }
+    const meta = conversation.usersMeta?.find(
+      (i) => i.userId.toString() === context.user._id.toString(),
+    );
+
+    if (!meta) {
+      return this.messageService.countFromDate({
+        conversationId: new ObjectId(conversation._id),
+        minDate: conversation.createdAt,
+      });
+    }
+
+    return this.messageService.countFromDate({
+      conversationId: new ObjectId(conversation._id),
+      minDate: new Date(meta.lastReadAt),
+    });
   }
 }
