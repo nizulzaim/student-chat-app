@@ -28,4 +28,7 @@ export class Conversation extends MasterEntity {
 
   @Field(() => ConversationType)
   type: ConversationType = ConversationType.private;
+
+  @Field(() => Date)
+  lastMessageAt: Date;
 }

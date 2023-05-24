@@ -6,6 +6,7 @@ import {
   Query,
   ResolveField,
   Resolver,
+  Subscription,
 } from '@nestjs/graphql';
 import { UsersService } from 'src/users/users.service';
 import { ConversationsService } from './conversations.service';
@@ -17,15 +18,19 @@ import {
   FindAllConversationsInput,
   FindOneConversationInput,
 } from './dto/args';
-import { Context } from '@libs/decorators';
+import { Context, Public } from '@libs/decorators';
 import { CreateConversationInput } from './dto/input';
 import { User } from 'src/users/entities/user.entity';
+import { PubSub } from 'graphql-subscriptions';
+import { Inject } from '@nestjs/common';
 
 @Resolver(() => Conversation)
 export class ConversationsResolver extends BaseResolver(Conversation) {
   constructor(
     private readonly userService: UsersService,
     private readonly conversationService: ConversationsService,
+    @Inject('PUB_SUB')
+    private readonly pubSub: PubSub,
   ) {
     super(userService);
   }
@@ -65,5 +70,16 @@ export class ConversationsResolver extends BaseResolver(Conversation) {
     @Context() ctx: RequestWithUser,
   ) {
     return this.conversationService.findNumberOfUnreadMessages(parent, ctx);
+  }
+
+  @Public()
+  @Subscription(() => Conversation, {
+    filter: (payload, variables) =>
+      payload.conversationUpdated.userIds
+        .map((i) => i.toString())
+        .includes(variables.userId),
+  })
+  conversationUpdated(@Args('userId') userId: string) {
+    return this.pubSub.asyncIterator('conversationUpdated');
   }
 }

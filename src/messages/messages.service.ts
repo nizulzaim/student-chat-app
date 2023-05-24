@@ -29,6 +29,7 @@ export class MessagesService {
     this.conversationService.update({
       _id: input.conversationId,
       userId: result.createdById,
+      lastMessageAt: result.createdAt,
     });
     this.pubSub.publish('messageAdded', { messageAdded: result });
 
@@ -45,10 +46,16 @@ export class MessagesService {
       ...data,
       conversationId: new ObjectId(data.conversationId),
     };
+
     const results = await this.message.findAllAndCount(query, {
       limit,
       skip: (page - 1) * limit,
       sort: { createdAt: -1 },
+    });
+
+    this.conversationService.update({
+      _id: input.conversationId,
+      userId: context.user._id,
     });
 
     return paginatedResultCreator({ ...results, page, limit });

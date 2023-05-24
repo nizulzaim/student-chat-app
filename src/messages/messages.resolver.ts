@@ -1,11 +1,4 @@
-import {
-  Args,
-  Context,
-  Mutation,
-  Query,
-  Resolver,
-  Subscription,
-} from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { MessagesService } from './messages.service';
 import { Message } from './entities/message.entity';
 import { UsersService } from 'src/users/users.service';
@@ -15,9 +8,8 @@ import { FindAllMessagesInput, MessagesSortArgs } from './dto/args';
 import { CreateMessageInput } from './dto/input';
 import { PubSub } from 'graphql-subscriptions';
 import { Inject, Injectable, Scope } from '@nestjs/common';
-import { Public } from '@libs/decorators';
+import { Context, Public } from '@libs/decorators';
 
-@Injectable({ scope: Scope.DEFAULT })
 @Resolver(() => Message)
 export class MessagesResolver extends BaseResolver(Message) {
   constructor(

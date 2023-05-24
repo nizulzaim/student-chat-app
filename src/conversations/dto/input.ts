@@ -9,6 +9,9 @@ export class CreateConversationInput {
 
   @Field(() => ConversationType)
   type: ConversationType = ConversationType.private;
+
+  @Field(() => Date)
+  lastMessageAt: Date;
 }
 
 @InputType()

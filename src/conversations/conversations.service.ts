@@ -1,5 +1,5 @@
 import { DatabaseService } from '@libs/databases';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Conversation } from './entities/conversation.entity';
 import { CreateConversationInput, UpdateConversationInput } from './dto/input';
 import {
@@ -10,12 +10,14 @@ import {
 import { RequestWithUser, paginatedResultCreator } from '@libs/commons';
 import { ObjectId } from 'mongodb';
 import { MessagesService } from 'src/messages/messages.service';
+import { PubSub } from 'graphql-subscriptions';
 
 @Injectable()
 export class ConversationsService {
   constructor(
     private readonly conversations: DatabaseService<Conversation>,
     private readonly messageService: MessagesService,
+    @Inject('PUB_SUB') private readonly pubSub: PubSub,
   ) {
     this.conversations.setCollection(Conversation);
   }
@@ -25,6 +27,7 @@ export class ConversationsService {
       ...input,
       userIds: [...input.userIds, context.user._id].map((i) => new ObjectId(i)),
       isActive: true,
+      lastMessageAt: new Date(),
     });
   }
 
@@ -53,13 +56,16 @@ export class ConversationsService {
       });
     }
 
-    return this.conversations.update(
+    const result = await this.conversations.update(
       { _id: new ObjectId(_id) },
       {
         ...data,
         usersMeta: currentMetadata,
       },
     );
+
+    this.pubSub.publish('conversationUpdated', { conversationUpdated: result });
+    return result;
   }
 
   async findAll(
@@ -68,12 +74,16 @@ export class ConversationsService {
     context: RequestWithUser,
   ) {
     const { page, limit, ...data } = input;
-    const query = { ...data, userIds: context.user._id };
+    const query = {
+      ...data,
+      userIds: context.user._id,
+      lastMessageAt: { $ne: null },
+    };
 
     const results = await this.conversations.findAllAndCount(query, {
       limit,
       skip: (page - 1) * limit,
-      sort: { updatedAt: -1 },
+      sort: { lastMessageAt: -1 },
     });
 
     return paginatedResultCreator({ ...results, page, limit });
