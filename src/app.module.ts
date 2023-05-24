@@ -16,6 +16,9 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auths/auth.guard';
 import { SortEnum } from '@libs/commons';
 import { FacultiesModule } from './faculties/faculties.module';
+import { ConversationsModule } from './conversations/conversations.module';
+import { MessagesModule } from './messages/messages.module';
+import { PubSub } from 'graphql-subscriptions';
 
 @Module({
   imports: [
@@ -32,6 +35,9 @@ import { FacultiesModule } from './faculties/faculties.module';
           autoSchemaFile: true,
           logger: new CustomLogger('Apollo GraphQL'),
           playground: false,
+          subscriptions: {
+            'graphql-ws': true,
+          },
           plugins: isNotProduction
             ? [
                 ApolloServerPluginInlineTrace(),
@@ -54,6 +60,8 @@ import { FacultiesModule } from './faculties/faculties.module';
     UsersModule,
     AuthsModule,
     FacultiesModule,
+    ConversationsModule,
+    MessagesModule,
   ],
   providers: [
     {
