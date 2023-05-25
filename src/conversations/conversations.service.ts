@@ -22,7 +22,15 @@ export class ConversationsService {
     this.conversations.setCollection(Conversation);
   }
 
-  create(input: CreateConversationInput, context: RequestWithUser) {
+  async create(input: CreateConversationInput, context: RequestWithUser) {
+    const currentData = await this.conversations.findOne({
+      userIds: {
+        $all: [...input.userIds, context.user._id].map((i) => new ObjectId(i)),
+      },
+    });
+
+    if (currentData) return currentData;
+
     return this.conversations.create({
       ...input,
       userIds: [...input.userIds, context.user._id].map((i) => new ObjectId(i)),

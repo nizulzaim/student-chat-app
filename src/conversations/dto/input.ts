@@ -10,8 +10,8 @@ export class CreateConversationInput {
   @Field(() => ConversationType)
   type: ConversationType = ConversationType.private;
 
-  @Field(() => Date)
-  lastMessageAt: Date;
+  @Field(() => Date, { nullable: true })
+  lastMessageAt?: Date;
 }
 
 @InputType()
