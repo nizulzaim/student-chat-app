@@ -100,7 +100,6 @@ export class DatabaseService<E extends MasterEntity> {
     } as Filter<E>;
 
     const result = await this.collection.findOne<E>(filter, options);
-    if (!result) throw new BadRequestException('Cannot find record');
 
     return result;
   }
