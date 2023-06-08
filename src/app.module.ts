@@ -18,7 +18,6 @@ import { SortEnum } from '@libs/commons';
 import { FacultiesModule } from './faculties/faculties.module';
 import { ConversationsModule } from './conversations/conversations.module';
 import { MessagesModule } from './messages/messages.module';
-import { PubSub } from 'graphql-subscriptions';
 
 @Module({
   imports: [

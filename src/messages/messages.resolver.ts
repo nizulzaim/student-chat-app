@@ -7,7 +7,7 @@ import { PaginatedMessage } from './dto/outputs';
 import { FindAllMessagesInput, MessagesSortArgs } from './dto/args';
 import { CreateMessageInput } from './dto/input';
 import { PubSub } from 'graphql-subscriptions';
-import { Inject, Injectable, Scope } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { Context, Public } from '@libs/decorators';
 
 @Resolver(() => Message)
@@ -40,7 +40,7 @@ export class MessagesResolver extends BaseResolver(Message) {
       payload.messageAdded.conversationId.toString() ===
       variables.conversationId,
   })
-  messageAdded(@Args('conversationId') conversationId: string) {
+  messageAdded(@Args('conversationId') _conversationId: string) {
     return this.pubSub.asyncIterator('messageAdded');
   }
 }
