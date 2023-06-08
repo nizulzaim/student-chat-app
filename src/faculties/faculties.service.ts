@@ -22,7 +22,7 @@ export class FacultiesService {
     this.faculty.setCollection(Faculty);
   }
 
-  rawFindAll(args: Filter<Faculty>) {
+  rawFindAll(args: Filter<Faculty>): Promise<Faculty[]> {
     return this.faculty.findAll(args);
   }
 
@@ -49,11 +49,11 @@ export class FacultiesService {
     return this.faculty.findOne(args);
   }
 
-  async create(input: CreateFacultyInput) {
+  async create(input: CreateFacultyInput): Promise<Faculty> {
     return this.faculty.createUnique(input, ['slug']);
   }
 
-  async update(input: UpdateFacultyInput) {
+  async update(input: UpdateFacultyInput): Promise<Faculty> {
     return this.faculty.update(input, ['slug']);
   }
 }
