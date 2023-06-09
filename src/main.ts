@@ -11,7 +11,6 @@ async function bootstrap(): Promise<void> {
 
   app.useLogger(logger);
   app.enableCors();
-
   logger.log(`Starting app on port ${port}`);
   await app.listen(port);
   logger.log(`App started on port ${port}`);

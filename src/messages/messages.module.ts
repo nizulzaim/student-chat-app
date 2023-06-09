@@ -1,9 +1,9 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { MessagesResolver } from './messages.resolver';
-import { UsersModule } from 'src/users/users.module';
 import { PubSub } from 'graphql-subscriptions';
 import { ConversationsModule } from 'src/conversations/conversations.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [UsersModule, forwardRef(() => ConversationsModule)],
