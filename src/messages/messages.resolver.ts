@@ -40,7 +40,7 @@ export class MessagesResolver extends BaseResolver(Message) {
       payload.messageAdded.conversationId.toString() ===
       variables.conversationId,
   })
-  messageAdded(@Args('conversationId') _conversationId: string) {
+  messageAdded(@Args('conversationId') conversationId: string) {
     return this.pubSub.asyncIterator('messageAdded');
   }
 }

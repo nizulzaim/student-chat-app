@@ -132,8 +132,6 @@ export class DatabaseService<E extends MasterEntity> {
       Omit<E, 'createdAt' | 'updatedAt' | 'isDeleted' | '_id'>
     > = {};
 
-    console.log(fieldToCheck);
-
     uniqueFields.forEach((i) => (fieldToCheck[i] = data[i as any]));
 
     const existingResult = await this.collection.findOne(

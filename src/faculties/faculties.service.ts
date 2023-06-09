@@ -50,10 +50,11 @@ export class FacultiesService {
   }
 
   async create(input: CreateFacultyInput): Promise<Faculty> {
-    return this.faculty.createUnique(input, ['slug']);
+    return this.faculty.createUnique(input, []);
   }
 
   async update(input: UpdateFacultyInput): Promise<Faculty> {
-    return this.faculty.update(input, ['slug']);
+    const { _id, ...data } = input;
+    return this.faculty.update({ _id }, data);
   }
 }

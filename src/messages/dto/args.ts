@@ -1,10 +1,10 @@
 import { NonPaginationArgs, PaginationArgs, SortEnum } from '@libs/commons';
-import { Field, ID, InputType, IntersectionType } from '@nestjs/graphql';
+import { Field, InputType, IntersectionType } from '@nestjs/graphql';
 import { ObjectId } from 'mongodb';
 
 @InputType()
 export class FindAllRawMessagesInput extends NonPaginationArgs {
-  @Field(() => ID, { nullable: true })
+  @Field({ nullable: true })
   userIds: ObjectId;
 }
 
@@ -13,7 +13,7 @@ export class FindAllMessagesInput extends IntersectionType(
   FindAllRawMessagesInput,
   PaginationArgs,
 ) {
-  @Field(() => ID, { nullable: true })
+  @Field({ nullable: true })
   conversationId: ObjectId;
 }
 

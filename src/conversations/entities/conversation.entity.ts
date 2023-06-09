@@ -1,6 +1,6 @@
 import { MasterEntity } from '@libs/databases/master.entity';
 import { Collection } from '@libs/decorators';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { ObjectId } from 'mongodb';
 
 export enum ConversationType {
@@ -10,7 +10,7 @@ export enum ConversationType {
 
 @ObjectType()
 export class UserMeta {
-  @Field(() => [ID])
+  @Field(() => [ObjectId])
   userId: ObjectId;
 
   @Field(() => Date)
@@ -20,7 +20,7 @@ export class UserMeta {
 @ObjectType()
 @Collection('conversations')
 export class Conversation extends MasterEntity {
-  @Field(() => [ID])
+  @Field(() => [ObjectId])
   userIds: ObjectId[];
 
   @Field(() => [UserMeta])

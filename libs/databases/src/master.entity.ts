@@ -9,7 +9,7 @@ export class MasterEntity {
     return this._tableName;
   }
 
-  @Field(() => ID)
+  @Field(() => ObjectId)
   readonly _id: ObjectId;
 
   @Field({ defaultValue: true })
@@ -24,9 +24,9 @@ export class MasterEntity {
   @Field()
   readonly isDeleted: boolean;
 
-  @Field(() => ID)
+  @Field(() => ObjectId)
   readonly createdById: ObjectId;
 
-  @Field(() => ID)
+  @Field(() => ObjectId)
   readonly updatedById: ObjectId;
 }

@@ -42,7 +42,7 @@ export class ConversationsService {
   async update(input: UpdateConversationInput) {
     const { _id, userId, ...data } = input;
     const currentRecord = await this.conversations.findOne({
-      _id: new ObjectId(_id),
+      _id,
     });
 
     const currentMetadata = currentRecord.usersMeta ?? [];
@@ -65,7 +65,7 @@ export class ConversationsService {
     }
 
     const result = await this.conversations.update(
-      { _id: new ObjectId(_id) },
+      { _id: _id },
       {
         ...data,
         usersMeta: currentMetadata,
@@ -118,13 +118,13 @@ export class ConversationsService {
 
     if (!meta) {
       return this.messageService.countFromDate({
-        conversationId: new ObjectId(conversation._id),
+        conversationId: conversation._id,
         minDate: conversation.createdAt,
       });
     }
 
     return this.messageService.countFromDate({
-      conversationId: new ObjectId(conversation._id),
+      conversationId: conversation._id,
       minDate: new Date(meta.lastReadAt),
     });
   }

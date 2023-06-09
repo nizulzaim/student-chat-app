@@ -1,9 +1,9 @@
-import { Field, ID, InputType } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { ObjectId } from 'mongodb';
 
 @InputType()
 export class CreateMessageInput {
-  @Field(() => ID)
+  @Field()
   conversationId: ObjectId;
 
   @Field()

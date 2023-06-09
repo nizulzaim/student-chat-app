@@ -3,12 +3,12 @@ import {
   NonPaginationArgs,
   PaginationArgs,
 } from '@libs/commons/types/paginated-input';
-import { Field, ID, InputType, IntersectionType } from '@nestjs/graphql';
+import { Field, InputType, IntersectionType } from '@nestjs/graphql';
 import { ObjectId } from 'mongodb';
 
 @InputType()
 export class FindOneFacultyInput {
-  @Field(() => ID, { nullable: true })
+  @Field({ nullable: true })
   _id?: ObjectId;
 
   @Field({ nullable: true })

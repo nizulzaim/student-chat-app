@@ -14,6 +14,7 @@ import {
   Algorithm,
   JwtHeader,
   SigningKeyCallback,
+  VerifyOptions,
   verify as jwtVerify,
 } from 'jsonwebtoken';
 import * as jwksClient from 'jwks-rsa';
@@ -67,10 +68,11 @@ export class AuthGuard implements CanActivate {
     const clientId = this.configService.get('AZURE_CLIENTID');
     const tenantId = this.configService.get('AZURE_TENANTID');
 
-    const options = {
+    const options: VerifyOptions = {
       algorithms: ['RS256'] as Algorithm[],
       issuer: `https://login.microsoftonline.com/${tenantId}/v2.0`,
       audience: clientId,
+      ignoreExpiration: true,
     };
     return new Promise<T>((resolve, reject) => {
       jwtVerify(idToken, this.getPublicKey, options, (err, decoded) => {

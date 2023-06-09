@@ -18,6 +18,8 @@ import { SortEnum } from '@libs/commons';
 import { FacultiesModule } from './faculties/faculties.module';
 import { ConversationsModule } from './conversations/conversations.module';
 import { MessagesModule } from './messages/messages.module';
+import { SubjectsModule } from './subjects/subjects.module';
+import { ObjectIdScalar } from '@libs/scalars';
 
 @Module({
   imports: [
@@ -61,8 +63,10 @@ import { MessagesModule } from './messages/messages.module';
     FacultiesModule,
     ConversationsModule,
     MessagesModule,
+    SubjectsModule,
   ],
   providers: [
+    ObjectIdScalar,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,

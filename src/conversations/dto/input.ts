@@ -1,10 +1,10 @@
-import { Field, ID, InputType, PartialType } from '@nestjs/graphql';
+import { Field, InputType, PartialType } from '@nestjs/graphql';
 import { ObjectId } from 'mongodb';
 import { ConversationType } from '../entities/conversation.entity';
 
 @InputType()
 export class CreateConversationInput {
-  @Field(() => [ID])
+  @Field(() => [ObjectId])
   userIds: ObjectId[];
 
   @Field(() => ConversationType)
@@ -18,9 +18,9 @@ export class CreateConversationInput {
 export class UpdateConversationInput extends PartialType(
   CreateConversationInput,
 ) {
-  @Field(() => ID)
+  @Field()
   _id: ObjectId;
 
-  @Field(() => ID, { nullable: true })
+  @Field({ nullable: true })
   userId?: ObjectId;
 }

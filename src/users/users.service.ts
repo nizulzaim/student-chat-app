@@ -1,6 +1,6 @@
 import { DatabaseService } from '@libs/databases';
 import { Injectable } from '@nestjs/common';
-import { User } from './entities/user.entity';
+import { User, UserType } from './entities/user.entity';
 import { FindAllUsersInput, FindOneUserInput, UsersSortArgs } from './dto/args';
 import {
   paginatedResultCreator,
@@ -48,12 +48,15 @@ export class UsersService {
 
   async create(input: CreateUserInput) {
     const password = await argon2.hash(input.password);
-    return this.user.createUnique({ ...input, password }, ['email']);
+    return this.user.createUnique(
+      { ...input, password, type: UserType.STUDENT },
+      ['email'],
+    );
   }
 
   // reset password method, id must be ObjectId
-  async resetPassword(id: ObjectId, password: string) {
+  async resetPassword(_id: ObjectId, password: string) {
     const hashedPassword = await argon2.hash(password);
-    return this.user.update({ _id: id }, { password: hashedPassword });
+    return this.user.update({ _id }, { password: hashedPassword });
   }
 }

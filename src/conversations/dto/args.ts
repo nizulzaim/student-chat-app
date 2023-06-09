@@ -2,18 +2,18 @@
 //  FindOneConversation based on the ConversationId
 
 import { NonPaginationArgs, PaginationArgs, SortEnum } from '@libs/commons';
-import { Field, ID, InputType, IntersectionType } from '@nestjs/graphql';
+import { Field, InputType, IntersectionType } from '@nestjs/graphql';
 import { ObjectId } from 'mongodb';
 
 @InputType()
 export class FindOneConversationInput {
-  @Field(() => ID, { nullable: true })
+  @Field({ nullable: true })
   _id?: ObjectId;
 }
 
 @InputType()
 export class FindAllRawConversationsInput extends NonPaginationArgs {
-  @Field(() => ID, { nullable: true })
+  @Field({ nullable: true })
   userIds: ObjectId;
 }
 
