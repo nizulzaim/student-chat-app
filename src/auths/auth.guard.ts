@@ -43,6 +43,7 @@ export class AuthGuard implements CanActivate {
     }
 
     const authToken: string = request.headers.authorization;
+
     if (!authToken?.startsWith('Bearer'))
       throw new AuthenticationError('Invalid token');
 
