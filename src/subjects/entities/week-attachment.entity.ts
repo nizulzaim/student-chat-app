@@ -4,7 +4,7 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ObjectId } from 'mongodb';
 
 @ObjectType()
-export class WeekAttachment {
+export class WeekDocument {
   @Field()
   name: string;
 
@@ -13,4 +13,7 @@ export class WeekAttachment {
 
   @Field(() => Int)
   week: number;
+
+  @Field(() => Date)
+  createdAt: Date;
 }

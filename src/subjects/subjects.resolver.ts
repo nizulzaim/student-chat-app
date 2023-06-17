@@ -16,7 +16,7 @@ import {
   FindAllSubjectsInput,
   FindOneSubjectInput,
 } from './dto/args';
-import { CreateSubjectInput, UpdateSubjectInput } from './dto/input';
+import { CreateSubjectInput, UpdateSubjectAddDocument, UpdateSubjectInput } from './dto/input';
 import { Faculty } from 'src/faculties/entities/faculty.entity';
 import { FacultiesService } from 'src/faculties/faculties.service';
 
@@ -40,7 +40,7 @@ export class SubjectsResolver extends BaseResolver(Subject) {
     return this.subjectService.findAll(query, sort);
   }
 
-  @Query(() => Subject)
+  @Query(() => Subject, {nullable: true})
   subject(@Args('query') query: FindOneSubjectInput): Promise<Subject> {
     return this.subjectService.findOne(query);
   }
@@ -59,4 +59,10 @@ export class SubjectsResolver extends BaseResolver(Subject) {
   async faculty(@Parent() parent: Subject) {
     return this.facultyService.findOne({ _id: parent.facultyId });
   }
+
+  @Mutation(() => Subject)
+  async updateSubjectAddDocument(@Args('input') input: UpdateSubjectAddDocument) {
+    return this.subjectService.addDocument(input)
+  }
+
 }

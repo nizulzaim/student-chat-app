@@ -12,7 +12,7 @@ import {
   transformSort,
 } from '@libs/commons';
 import { PaginatedSubjects } from './dto/outputs';
-import { CreateSubjectInput, UpdateSubjectInput } from './dto/input';
+import { CreateSubjectInput, UpdateSubjectAddDocument, UpdateSubjectInput } from './dto/input';
 import { Filter } from 'mongodb';
 
 @Injectable()
@@ -55,5 +55,13 @@ export class SubjectsService {
   async update(input: UpdateSubjectInput): Promise<Subject> {
     const { _id, ...data } = input;
     return this.subject.update({ _id }, data);
+  }
+
+  async addDocument(input: UpdateSubjectAddDocument) {
+    const {_id, ...data} = input;
+
+    return this.subject.update({_id}, {$push: {
+      weekAttachments: {...data, createdAt: new Date()}
+    }}, true)
   }
 }

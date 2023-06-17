@@ -14,6 +14,7 @@ import { MessagesModule } from './messages/messages.module';
 import { SubjectsModule } from './subjects/subjects.module';
 import { ObjectIdScalar } from '@libs/scalars';
 import { SemestersModule } from './semesters/semesters.module';
+import { AttachmentsModule } from './attachments/attachments.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { SemestersModule } from './semesters/semesters.module';
     MessagesModule,
     SubjectsModule,
     SemestersModule,
+    AttachmentsModule,
   ],
   providers: [
     ObjectIdScalar,

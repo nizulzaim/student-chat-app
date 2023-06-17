@@ -1,4 +1,4 @@
-import { Field, InputType, PartialType } from '@nestjs/graphql';
+import { Field, InputType, Int, PartialType } from '@nestjs/graphql';
 import { ObjectId } from 'mongodb';
 
 @InputType()
@@ -20,4 +20,20 @@ export class CreateSubjectInput {
 export class UpdateSubjectInput extends PartialType(CreateSubjectInput) {
   @Field()
   _id: ObjectId;
+}
+
+
+@InputType()
+export class UpdateSubjectAddDocument {
+  @Field()
+  _id: ObjectId;
+
+  @Field(() => Int)
+  week: number;
+
+  @Field()
+  attachmentId: ObjectId;
+
+  @Field()
+  name: string;
 }
