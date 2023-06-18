@@ -3,17 +3,13 @@ import {
   Resolver,
   Query,
   Mutation,
-  ResolveField,
-  Parent,
 } from '@nestjs/graphql';
 import { Attachment } from './entities/attachment.entity';
 import { UsersService } from 'src/users/users.service';
 import { AttachmentsService } from './attachments.service';
 import { BaseResolver } from '@libs/commons';
-import { Faculty } from 'src/faculties/entities/faculty.entity';
-import { FacultiesService } from 'src/faculties/faculties.service';
 import { GraphQLUpload } from 'graphql-upload';
-import { FileUpload, Upload } from './interfaces/file-upload';
+import { FileUpload } from './interfaces/file-upload';
 
 @Resolver(() => Attachment)
 export class AttachmentsResolver extends BaseResolver(Attachment) {
