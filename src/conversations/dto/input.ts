@@ -12,6 +12,9 @@ export class CreateConversationInput {
 
   @Field(() => Date, { nullable: true })
   lastMessageAt?: Date;
+
+  @Field({ nullable: true })
+  name?: string;
 }
 
 @InputType()

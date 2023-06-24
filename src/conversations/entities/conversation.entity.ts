@@ -31,4 +31,7 @@ export class Conversation extends MasterEntity {
 
   @Field(() => Date, { nullable: true })
   lastMessageAt: Date;
+
+  @Field({ nullable: true })
+  name?: string;
 }

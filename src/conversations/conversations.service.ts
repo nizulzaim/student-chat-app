@@ -31,9 +31,15 @@ export class ConversationsService {
 
     if (currentData) return currentData;
 
-    return this.conversations.create({
+    return this.createRaw({
       ...input,
       userIds: [...input.userIds, context.user._id].map((i) => new ObjectId(i)),
+    });
+  }
+
+  createRaw(input: CreateConversationInput) {
+    return this.conversations.create({
+      ...input,
       isActive: true,
       lastMessageAt: new Date(),
     });

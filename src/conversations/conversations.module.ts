@@ -6,9 +6,14 @@ import { ConversationType } from './entities/conversation.entity';
 import { MessagesModule } from 'src/messages/messages.module';
 import { PubSub } from 'graphql-subscriptions';
 import { UsersModule } from 'src/users/users.module';
+import { SemesterClassesModule } from 'src/semester-classes/semester-classes.module';
 
 @Module({
-  imports: [UsersModule, forwardRef(() => MessagesModule)],
+  imports: [
+    UsersModule,
+    forwardRef(() => MessagesModule),
+    forwardRef(() => SemesterClassesModule),
+  ],
   providers: [
     ConversationsService,
     ConversationsResolver,

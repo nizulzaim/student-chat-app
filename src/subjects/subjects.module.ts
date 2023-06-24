@@ -9,5 +9,6 @@ import { SubjectWeekDocumentsResolver } from './subject-week-documents.resolver'
 @Module({
   imports: [UsersModule, FacultiesModule, AttachmentsModule],
   providers: [SubjectsService, SubjectsResolver, SubjectWeekDocumentsResolver],
+  exports: [SubjectsService],
 })
 export class SubjectsModule {}

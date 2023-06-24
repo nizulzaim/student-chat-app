@@ -11,7 +11,7 @@ import {
 import { UsersService } from 'src/users/users.service';
 import { ConversationsService } from './conversations.service';
 import { BaseResolver, RequestWithUser } from '@libs/commons';
-import { Conversation } from './entities/conversation.entity';
+import { Conversation, ConversationType } from './entities/conversation.entity';
 import { PaginatedConversation } from './dto/output';
 import {
   ConversationsSortArgs,
@@ -23,12 +23,15 @@ import { CreateConversationInput } from './dto/input';
 import { User } from 'src/users/entities/user.entity';
 import { PubSub } from 'graphql-subscriptions';
 import { Inject } from '@nestjs/common';
+import { SemesterClass } from 'src/semester-classes/entities/semester-class.entity';
+import { SemesterClassesService } from 'src/semester-classes/semester-classes.service';
 
 @Resolver(() => Conversation)
 export class ConversationsResolver extends BaseResolver(Conversation) {
   constructor(
     private readonly userService: UsersService,
     private readonly conversationService: ConversationsService,
+    private readonly semesterClassService: SemesterClassesService,
     @Inject('PUB_SUB')
     private readonly pubSub: PubSub,
   ) {
@@ -81,5 +84,11 @@ export class ConversationsResolver extends BaseResolver(Conversation) {
   })
   conversationUpdated(@Args('userId') userId: string) {
     return this.pubSub.asyncIterator('conversationUpdated');
+  }
+
+  @ResolveField(() => SemesterClass, { nullable: true })
+  semesterClass(@Parent() parent: Conversation) {
+    if (parent.type === ConversationType.private) return null;
+    return this.semesterClassService.findOne({ conversationId: parent._id });
   }
 }

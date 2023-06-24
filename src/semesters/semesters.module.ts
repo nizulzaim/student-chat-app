@@ -6,5 +6,6 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
   imports: [UsersModule],
   providers: [SemestersService, SemestersResolver],
+  exports: [SemestersService],
 })
 export class SemestersModule {}
