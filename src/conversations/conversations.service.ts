@@ -1,6 +1,6 @@
 import { DatabaseService } from '@libs/databases';
 import { Inject, Injectable } from '@nestjs/common';
-import { Conversation } from './entities/conversation.entity';
+import { Conversation, ConversationType } from './entities/conversation.entity';
 import { CreateConversationInput, UpdateConversationInput } from './dto/input';
 import {
   ConversationsSortArgs,
@@ -27,6 +27,7 @@ export class ConversationsService {
       userIds: {
         $all: [...input.userIds, context.user._id].map((i) => new ObjectId(i)),
       },
+      type: ConversationType.private,
     });
 
     if (currentData) return currentData;
