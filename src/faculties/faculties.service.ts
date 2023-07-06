@@ -31,10 +31,7 @@ export class FacultiesService {
     sort: FacultiesSortArgs,
   ): Promise<PaginatedFaculties> {
     const { page, limit, ...data } = input;
-    const query = searchQuery<Faculty, FindAllFacultiesInput>(data, [
-      'name',
-      'slug',
-    ]);
+    const query = searchQuery<Faculty, FindAllFacultiesInput>(data, ['name']);
 
     const results = await this.faculty.findAllAndCount(query, {
       limit,
